@@ -44,7 +44,7 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
 
     This function is triggered to create API calls that will
     give the surge multiplier and the wait time of all uber product types at
-    the locations that we have specified.
+    the locations that is have specified.
 
     :param price_api_params: The list of price API paramaters to create a call
     for each location we have.
