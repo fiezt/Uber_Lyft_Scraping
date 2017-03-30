@@ -128,30 +128,30 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
                         with open(path, 'ab') as f:
                             fileWriter = csv.writer(f, delimiter=',')
                             fileWriter.writerow([str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-						 price_data[i]['prices'][j]['surge_multiplier'],
-             					 wait_time,
-					         price_data[i]['prices'][j]['duration'],
-					         price_data[i]['prices'][j]['distance'],
-						 price_data[i]['prices'][j]['estimate'],
-					         price_data[i]['prices'][j]['low_estimate'],
-					         price_data[i]['prices'][j]['high_estimate'],
-					         str(price_data[i]['prices'][j]['display_name']),
-						 price_api_params[i]['location_id'],
-						 price_api_params[i]['parameters']['start_latitude'],
-						 price_api_params[i]['parameters']['start_longitude'],
-					         price_api_params[i]['parameters']['end_latitude'],
-					         price_api_params[i]['parameters']['end_longitude']])
+						                         price_data[i]['prices'][j]['surge_multiplier'],
+             					                 wait_time,
+					                             price_data[i]['prices'][j]['duration'],
+                    					         price_data[i]['prices'][j]['distance'],
+                    						     price_data[i]['prices'][j]['estimate'],
+                    					         price_data[i]['prices'][j]['low_estimate'],
+                    					         price_data[i]['prices'][j]['high_estimate'],
+                    					         str(price_data[i]['prices'][j]['display_name']),
+                    						     price_api_params[i]['location_id'],
+                    						     price_api_params[i]['parameters']['start_latitude'],
+                    						     price_api_params[i]['parameters']['start_longitude'],
+                    					         price_api_params[i]['parameters']['end_latitude'],
+                    					         price_api_params[i]['parameters']['end_longitude']])
 		    except:
                 pass
 
 
 def main():
-    # Read in all the geographical information of the locations we will get the
+    # Read in all the geographical information of the locations to get the
     # price from.
     location_file = np.genfromtxt('locations.csv', delimiter=',')
 
     # This list will contain dictionaries with each dictionary containing the location
-    # id, latitude, and longitude for each location in locations.csv.
+    # id, lat, and long for each location in locations.csv.
     locations = list()
 
     for i in range(len(location_file)):
@@ -203,18 +203,18 @@ def main():
     if not os.path.isfile(os.path.join(path, output_file_name)):
         with open(os.path.join(path, output_file_name), 'wb') as f:
             fileWriter = csv.writer(f, delimiter=',')
-	    fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-			         'duration', 'distance', 'estimate', 'low_estimate', 
-				 'high_estimate', 'product_type', 'start_geoid', 
-			         'start_latitude', 'start_longitude', 'end_latitude', 
-			         'end_longitude'])
+	        fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
+			                     'duration', 'distance', 'estimate', 'low_estimate', 
+				                 'high_estimate', 'product_type', 'start_geoid', 
+        			             'start_latitude', 'start_longitude', 'end_latitude', 
+        			             'end_longitude'])
 
     # Call the function for the script to run continuously.
     while 1:
         # Get and write the information.
         gather_loop(price_api_params, time_api_params, uber_server_tokens, os.path.join(path, output_file_name))
 		
-	# Time between API calls.
+	   # Time between API calls.
         time.sleep(250)
        	new_day = datetime.datetime.today().day
 
@@ -227,10 +227,10 @@ def main():
             with open(os.path.join(pth, output_file_name), 'wb') as f:
                 fileWriter = csv.writer(f, delimiter=',')
                 fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-				     'duration', 'distance', 'estimate', 'low_estimate', 
-				     'high_estimate', 'product_type', 'start_geoid', 
-				     'start_latitude', 'start_longitude', 'end_latitude', 
-				     'end_longitude'])
+				                     'duration', 'distance', 'estimate', 'low_estimate', 
+				                     'high_estimate', 'product_type', 'start_geoid', 
+				                     'start_latitude', 'start_longitude', 'end_latitude', 
+				                     'end_longitude'])
 
 
 if __name__ == '__main__':
