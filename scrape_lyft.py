@@ -75,9 +75,9 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
                                                            client_secret[0]))
 
     try:
-    	server_token = auth_token_response.json()['access_token']
+        server_token = auth_token_response.json()['access_token']
     except:
-	return 
+    return 
 
     # Create the requests for price and time API calls for each of the locations.
     for i in range(len(price_api_params)):
@@ -131,18 +131,18 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
                         with open(path, 'ab') as f:
                             fileWriter = csv.writer(f, delimiter=',')
                             fileWriter.writerow([str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-                                             price_data[i]['cost_estimates'][j]['primetime_percentage'],
-                                             wait_time,
-				             price_data[i]['cost_estimates'][j]['estimated_duration_seconds'],
-				             price_data[i]['cost_estimates'][j]['estimated_distance_miles'],
-				             price_data[i]['cost_estimates'][j]['estimated_cost_cents_min'],
-				             price_data[i]['cost_estimates'][j]['estimated_cost_cents_max'],
-                                             str(price_data[i]['cost_estimates'][j]['display_name']),
-                                             price_api_params[i]['location_id'],
-                                             price_api_params[i]['parameters']['start_lat'],
-                                             price_api_params[i]['parameters']['start_lng'],
-                                             price_api_params[i]['parameters']['end_lat'],
-                                             price_api_params[i]['parameters']['end_lng']])
+                                                 price_data[i]['cost_estimates'][j]['primetime_percentage'],
+                                                 wait_time,
+                                                 price_data[i]['cost_estimates'][j]['estimated_duration_seconds'],
+                                                 price_data[i]['cost_estimates'][j]['estimated_distance_miles'],
+                                                 price_data[i]['cost_estimates'][j]['estimated_cost_cents_min'],
+                                                 price_data[i]['cost_estimates'][j]['estimated_cost_cents_max'],
+                                                 str(price_data[i]['cost_estimates'][j]['display_name']),
+                                                 price_api_params[i]['location_id'],
+                                                 price_api_params[i]['parameters']['start_lat'],
+                                                 price_api_params[i]['parameters']['start_lng'],
+                                                 price_api_params[i]['parameters']['end_lat'],
+                                                 price_api_params[i]['parameters']['end_lng']])
             except:
                 pass
 
@@ -208,7 +208,7 @@ def main():
             fileWriter = csv.writer(f, delimiter=',')
             fileWriter.writerow(['timestamp', 'primetime_percentage', 'expected_wait_time',
                                  'duration', 'distance', 'low_estimate', 'high_estimate',
-    			     'product_type', 'start_geoid', 'start_latitude',
+                                 'product_type', 'start_geoid', 'start_latitude',
                                  'start_longitude', 'end_latitude', 'end_longitude'])
 
     # Call the function for the script to run continuously.
@@ -227,9 +227,9 @@ def main():
             with open(os.path.join(path, output_file_name), 'wb') as f:
                 fileWriter = csv.writer(f, delimiter=',')
                 fileWriter.writerow(['timestamp', 'primetime_percentage', 'expected_wait_time',
-                                 'duration', 'distance', 'low_estimate', 'high_estimate',
-    			     'product_type', 'start_geoid', 'start_latitude',
-                                 'start_longitude', 'end_latitude', 'end_longitude'])
+                                     'duration', 'distance', 'low_estimate', 'high_estimate',
+                                     'product_type', 'start_geoid', 'start_latitude',
+                                     'start_longitude', 'end_latitude', 'end_longitude'])
 
 
 if __name__ == '__main__':
