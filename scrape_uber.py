@@ -205,7 +205,7 @@ def main():
             fileWriter = csv.writer(f, delimiter=',')
 			fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
 					     'duration', 'distance', 'estimate', 'low_estimate', 
-				             'high_estimate', 'product_type', 'start_geoid', 
+					     'high_estimate', 'product_type', 'start_geoid', 
 					     'start_latitude', 'start_longitude', 'end_latitude', 
 					     'end_longitude'])
 
@@ -227,10 +227,10 @@ def main():
             with open(os.path.join(path, output_file_name), 'wb') as f:
                 fileWriter = csv.writer(f, delimiter=',')
                 fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-				     'duration', 'distance', 'estimate', 'low_estimate', 
-				     'high_estimate', 'product_type', 'start_geoid', 
-				     'start_latitude', 'start_longitude', 'end_latitude', 
-    			     	     'end_longitude'])
+									 'duration', 'distance', 'estimate', 'low_estimate', 
+									 'high_estimate', 'product_type', 'start_geoid', 
+									 'start_latitude', 'start_longitude', 'end_latitude', 
+									 'end_longitude'])
 
 
 if __name__ == '__main__':
