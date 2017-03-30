@@ -204,7 +204,7 @@ def main():
         with open(os.path.join(path, output_file_name), 'wb') as f:
             fileWriter = csv.writer(f, delimiter=',')
 			fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-								 'duration', 'distance', 'estimate', 'low_estimate', 
+							     'duration', 'distance', 'estimate', 'low_estimate', 
 					     		 'high_estimate', 'product_type', 'start_geoid', 
 					     		 'start_latitude', 'start_longitude', 'end_latitude', 
 					     		 'end_longitude'])
