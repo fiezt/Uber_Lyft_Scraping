@@ -128,20 +128,20 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
                         with open(path, 'ab') as f:
                             fileWriter = csv.writer(f, delimiter=',')
                             fileWriter.writerow([str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-                                             price_data[i]['prices'][j]['surge_multiplier'],
-                                             wait_time,
-					     price_data[i]['prices'][j]['duration'],
-					     price_data[i]['prices'][j]['distance'],
-					     price_data[i]['prices'][j]['estimate'],
-					     price_data[i]['prices'][j]['low_estimate'],
-					     price_data[i]['prices'][j]['high_estimate'],
-                                             str(price_data[i]['prices'][j]['display_name']),
-                                             price_api_params[i]['location_id'],
-                                             price_api_params[i]['parameters']['start_latitude'],
-                                             price_api_params[i]['parameters']['start_longitude'],
-                                             price_api_params[i]['parameters']['end_latitude'],
-                                             price_api_params[i]['parameters']['end_longitude']])
-            except:
+						     price_data[i]['prices'][j]['surge_multiplier'],
+						     wait_time,
+						     price_data[i]['prices'][j]['duration'],
+						     price_data[i]['prices'][j]['distance'],
+						     price_data[i]['prices'][j]['estimate'],
+						     price_data[i]['prices'][j]['low_estimate'],
+						     price_data[i]['prices'][j]['high_estimate'],
+						     str(price_data[i]['prices'][j]['display_name']),
+						     price_api_params[i]['location_id'],
+						     price_api_params[i]['parameters']['start_latitude'],
+						     price_api_params[i]['parameters']['start_longitude'],
+						     price_api_params[i]['parameters']['end_latitude'],
+						     price_api_params[i]['parameters']['end_longitude']])
+		    except:
                 pass
 
 
@@ -204,10 +204,10 @@ def main():
         with open(os.path.join(path, output_file_name), 'wb') as f:
             fileWriter = csv.writer(f, delimiter=',')
 			fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-								 'duration', 'distance', 'estimate', 'low_estimate', 
-								 'high_estimate', 'product_type', 'start_geoid', 
-								 'start_latitude', 'start_longitude', 'end_latitude', 
-								 'end_longitude'])
+					     'duration', 'distance', 'estimate', 'low_estimate', 
+				             'high_estimate', 'product_type', 'start_geoid', 
+					     'start_latitude', 'start_longitude', 'end_latitude', 
+					     'end_longitude'])
 
     # Call the function for the script to run continuously.
     while 1:
