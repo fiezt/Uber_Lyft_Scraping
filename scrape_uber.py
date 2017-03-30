@@ -40,9 +40,9 @@ def exception_handler(request, exception):
     pass
 
 def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
-    """Called every 5 minutes to gather the surge multiplier and wait time.
+    """Called to gather the surge multiplier, wait time, and other api information.
 
-    This function is triggered every ~5 minutes to create API calls that will
+    This function is triggered to create API calls that will
     give the surge multiplier and the wait time of all uber product types at
     the locations that we have specified.
 
@@ -60,10 +60,6 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
     price_reqs = list() # List to hold the requests for price API calls.
     time_reqs = list() # List to hold the requests for timer API calls.
 
-    # Create a session. This is done because in the function there are 2 API
-    # calls made for each location and there are 578 locations. Without this
-    # only 1024 sockets can be open, so some of the API calls would fail since
-    # it would exceed the limit. Creating the session gets around this problem.
     session = requests.session()
 
     # Create the requests for price and time API calls for each location.
@@ -85,15 +81,14 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
         time_reqs.append(time_response)
 
         # Increment the token number. The token number will let us change what
-        # token we are using to make the API calls. This is needed because uber
-        # limits the requests from a token to 2000 per hour and we will be
-        # making about 14000 so we need to use several tokens to avoid hitting
-        # the limit.
+        # token we are using to make the API calls. This is needed if we are making
+		# requests for many locations or very frequently because uber limits 
+        # the requests from a token to 2000 per hour.
         token_num += 1
         if token_num == len(uber_server_tokens):
             token_num = 0
 
-    # Price and Time lists to hold the data in the from the API responses.
+    # Price and time lists to hold the data in the from the API responses.
     price_data = list()
     time_data = list()
 
@@ -159,14 +154,13 @@ def main():
     # id, latitude, and longitude for each location in locations.csv.
     locations = list()
 
-
     for i in range(len(location_file)):
         location_dict = dict()
         location_dict['location_id'] = i  
-        location_dict['latitude1'] = location_file[i][0]  # Get the latitude.
-        location_dict['longitude1'] = location_file[i][1]  # Get the longitude.
-        location_dict['latitude2'] = location_file[i][2]  # Get the latitude.
-        location_dict['longitude2'] = location_file[i][3]  # Get the longitude.
+        location_dict['latitude1'] = location_file[i][0]  # Get the start latitude.
+        location_dict['longitude1'] = location_file[i][1]  # Get the start longitude.
+        location_dict['latitude2'] = location_file[i][2]  # Get the end latitude.
+        location_dict['longitude2'] = location_file[i][3]  # Get the end longitude.
         locations.append(location_dict)  # Add to the dictionary.
 
     # The tokens allow for calls to the uber API. Add in a list of your tokens
@@ -202,7 +196,6 @@ def main():
                              'type': 'price', 'parameters': price_parameters})
     time_api_params.append({'url': time_url, 'location_id': location_id,
                             'type': 'time', 'parameters': time_parameters})
-
     curr_day = datetime.datetime.today().day
 
     path = os.getcwd() + '/data'
@@ -222,14 +215,16 @@ def main():
     while 1:
         # Get and write the information.
         gather_loop(price_api_params, time_api_params, uber_server_tokens, os.path.join(path, output_file_name))
+		
+		# Time between API calls.
         time.sleep(250)
-        # Get day of the month as an integer.
-        new_day = datetime.datetime.today().day
+       	new_day = datetime.datetime.today().day
 
         # If the day has changed, close the previous file and open a new file.
         if new_day != curr_day:
             curr_day = new_day  
-            # Create new name by the date for the file.
+            
+			# Create new name by the date for the file.
             output_file_name = str(time.strftime("%m_%d_%Y")) + '.csv'
             with open(os.path.join(path, output_file_name), 'wb') as f:
                 fileWriter = csv.writer(f, delimiter=',')
