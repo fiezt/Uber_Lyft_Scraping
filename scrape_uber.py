@@ -8,7 +8,7 @@ import grequests
 import time
 import os
 
-	
+    
 def get_wait(times, name):
     """Get the estimated wait time for a product type at a location.
 
@@ -82,7 +82,7 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
 
         # Increment the token number. The token number will let us change what
         # token we are using to make the API calls. This is needed if we are making
-		# requests for many locations or very frequently because uber limits 
+        # requests for many locations or very frequently because uber limits 
         # the requests from a token to 2000 per hour.
         token_num += 1
         if token_num == len(uber_server_tokens):
@@ -128,20 +128,20 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
                         with open(path, 'ab') as f:
                             fileWriter = csv.writer(f, delimiter=',')
                             fileWriter.writerow([str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-						                         price_data[i]['prices'][j]['surge_multiplier'],
-             					                 wait_time,
-					                             price_data[i]['prices'][j]['duration'],
-                    					         price_data[i]['prices'][j]['distance'],
-                    						     price_data[i]['prices'][j]['estimate'],
-                    					         price_data[i]['prices'][j]['low_estimate'],
-                    					         price_data[i]['prices'][j]['high_estimate'],
-                    					         str(price_data[i]['prices'][j]['display_name']),
-                    						     price_api_params[i]['location_id'],
-                    						     price_api_params[i]['parameters']['start_latitude'],
-                    						     price_api_params[i]['parameters']['start_longitude'],
-                    					         price_api_params[i]['parameters']['end_latitude'],
-                    					         price_api_params[i]['parameters']['end_longitude']])
-		    except:
+                                                 price_data[i]['prices'][j]['surge_multiplier'],
+                                                  wait_time,
+                                                 price_data[i]['prices'][j]['duration'],
+                                                 price_data[i]['prices'][j]['distance'],
+                                                 price_data[i]['prices'][j]['estimate'],
+                                                 price_data[i]['prices'][j]['low_estimate'],
+                                                 price_data[i]['prices'][j]['high_estimate'],
+                                                 str(price_data[i]['prices'][j]['display_name']),
+                                                 price_api_params[i]['location_id'],
+                                                 price_api_params[i]['parameters']['start_latitude'],
+                                                 price_api_params[i]['parameters']['start_longitude'],
+                                                 price_api_params[i]['parameters']['end_latitude'],
+                                                 price_api_params[i]['parameters']['end_longitude']])
+            except:
                 pass
 
 
@@ -203,34 +203,34 @@ def main():
     if not os.path.isfile(os.path.join(path, output_file_name)):
         with open(os.path.join(path, output_file_name), 'wb') as f:
             fileWriter = csv.writer(f, delimiter=',')
-	        fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-			                     'duration', 'distance', 'estimate', 'low_estimate', 
-				                 'high_estimate', 'product_type', 'start_geoid', 
-        			             'start_latitude', 'start_longitude', 'end_latitude', 
-        			             'end_longitude'])
+            fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
+                                 'duration', 'distance', 'estimate', 'low_estimate', 
+                                 'high_estimate', 'product_type', 'start_geoid', 
+                                 'start_latitude', 'start_longitude', 'end_latitude', 
+                                 'end_longitude'])
 
     # Call the function for the script to run continuously.
     while 1:
         # Get and write the information.
         gather_loop(price_api_params, time_api_params, uber_server_tokens, os.path.join(path, output_file_name))
-		
-	   # Time between API calls.
+        
+       # Time between API calls.
         time.sleep(250)
-       	new_day = datetime.datetime.today().day
+           new_day = datetime.datetime.today().day
 
         # If the day has changed, close the previous file and open a new file.
         if new_day != curr_day:
             curr_day = new_day  
             
-	    # Create new name by the date for the file.
+        # Create new name by the date for the file.
             output_file_name = str(time.strftime("%m_%d_%Y")) + '.csv'
             with open(os.path.join(pth, output_file_name), 'wb') as f:
                 fileWriter = csv.writer(f, delimiter=',')
                 fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
-				                     'duration', 'distance', 'estimate', 'low_estimate', 
-				                     'high_estimate', 'product_type', 'start_geoid', 
-				                     'start_latitude', 'start_longitude', 'end_latitude', 
-				                     'end_longitude'])
+                                     'duration', 'distance', 'estimate', 'low_estimate', 
+                                     'high_estimate', 'product_type', 'start_geoid', 
+                                     'start_latitude', 'start_longitude', 'end_latitude', 
+                                     'end_longitude'])
 
 
 if __name__ == '__main__':
