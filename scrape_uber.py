@@ -198,7 +198,7 @@ def main():
                             'type': 'time', 'parameters': time_parameters})
     curr_day = datetime.datetime.today().day
 
-    path = os.getcwd() + '/data'
+    path = os.getcwd() + '../uber_data'
     output_file_name = str(time.strftime("%m_%d_%Y")) + '.csv'
     if not os.path.isfile(os.path.join(path, output_file_name)):
         with open(os.path.join(path, output_file_name), 'wb') as f:
@@ -214,7 +214,7 @@ def main():
         # Get and write the information.
         gather_loop(price_api_params, time_api_params, uber_server_tokens, os.path.join(path, output_file_name))
 		
-		# Time between API calls.
+	# Time between API calls.
         time.sleep(250)
        	new_day = datetime.datetime.today().day
 
