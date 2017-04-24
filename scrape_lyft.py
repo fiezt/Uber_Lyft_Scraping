@@ -81,7 +81,7 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
     time_data = list()
 
     # This call makes the price requests asynchronously.
-    price_results = grequests.map(price_reqs, exception_handler=lambda: None)
+    price_results = grequests.map(price_reqs, exception_handler=lambda x, y: None)
 
     for result in price_results:
         try:
@@ -90,7 +90,7 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
             price_data.append(None)
 
     # This call makes the time requests asynchronously.
-    time_results = grequests.map(time_reqs, exception_handler=lambda: None)
+    time_results = grequests.map(time_reqs, exception_handler=lambda x, y: None)
 
     for result in time_results:
         try:
@@ -139,16 +139,16 @@ def main():
 
     for i in range(len(location_file)):
         location_dict = dict()
-        location_dict['location_id'] = i  
-        location_dict['latitude1'] = location_file[i][0]  
-        location_dict['longitude1'] = location_file[i][1]  
-        location_dict['latitude2'] = location_file[i][2]  
-        location_dict['longitude2'] = location_file[i][3]  
+        location_dict['location_id'] = location_file[i][0] 
+        location_dict['latitude1'] = location_file[i][1]  
+        location_dict['longitude1'] = location_file[i][2]  
+        location_dict['latitude2'] = location_file[i][3]  
+        location_dict['longitude2'] = location_file[i][4]  
         locations.append(location_dict)  
 
     # API information for key.
-    client_id = []
-    client_secret = []
+    client_id = ['yC1b0kHu-7pT']
+    client_secret = ['kffzlIc5f8gADZS4PPW_FMdbUzkOsCGW']
 
     price_url = 'https://api.lyft.com/v1/cost'
     time_url = 'https://api.lyft.com/v1/eta'

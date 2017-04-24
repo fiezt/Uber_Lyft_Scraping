@@ -78,8 +78,8 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
     time_data = list()
 
     # This call makes the price requests asynchronously.
-    price_results = grequests.map(price_reqs,
-                                  exception_handler=exception_handler)
+    price_results = grequests.map(price_reqs, exception_handler=lambda x, y: None)
+    
     for result in price_results:
         try:
             price_data.append(result.json()) 
@@ -87,7 +87,7 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
             price_data.append(None)
 
     # This call makes the time requests asynchronously.
-    time_results = grequests.map(time_reqs, exception_handler=exception_handler)
+    time_results = grequests.map(time_reqs, exception_handler=lambda x, y: None)
 
     for result in time_results:
         try:
@@ -139,15 +139,28 @@ def main():
 
     for i in range(len(location_file)):
         location_dict = dict()
-        location_dict['location_id'] = i  
-        location_dict['latitude1'] = location_file[i][0]  
-        location_dict['longitude1'] = location_file[i][1]  
-        location_dict['latitude2'] = location_file[i][2]  
-        location_dict['longitude2'] = location_file[i][3]  
+        location_dict['location_id'] = location_file[i][0]
+        location_dict['latitude1'] = location_file[i][1]  
+        location_dict['longitude1'] = location_file[i][2]  
+        location_dict['latitude2'] = location_file[i][3]  
+        location_dict['longitude2'] = location_file[i][4]  
         locations.append(location_dict)  
 
     # The tokens allow for calls to the uber API. 
-    uber_server_tokens = []
+    uber_server_tokens = ['QhNzzz2EsfS5K7YbbPf3du3APJlLx7gj_V7_KSzd',
+             		      '5-XSjcsQ8VSrh1NDc7Q_4F7Giq0mXe0CdHsYViRt',
+                          'XNSBZf0XlGXL8Vv0i_nwF9S6gU8mvMI8m_BdD1q1',
+                          'rWuvx5J_v48zbUPCH1aS4qsU08P6QaxcLSQXywZq',
+                          'ekYMqzXFV1vp68kev4swZVnshBs9nvSzBT62eWc8',
+                          'eceF62G35rzOaG6xDxmy97ZyaS5G4J6lC1pa6ruR',
+		                  'u8SO6N0DIbQnasMTo_e5F9bQHzsOtk0ILDriqwP1',
+                          'MNybuzgYo_SzIxf8rL7qeNE8Z_GdAihaW0-sZjgs',
+                          'MwRdAfu7wl34oJVJo5eJWcOAoCSqMfbBcAoCntid',
+                          '8xtbiB-GJd2zxLgpRRLMe6ZTi9h85Oy-xacRm8Rn',
+                          '-kNmZfr0M8RmkiM-Oiws6lCnT_aRrEZ61uc3bfRP',
+                          'dxDcib8FerhNEvG_yHXsQsCuVx24h7rJNF0Zt3jV',
+                          'hVAY0MGSgwyIKDMAOTjvMUloSM7oxo-MQJKXW7Nt']
+
 
     price_url = 'https://api.uber.com/v1/estimates/price'
     time_url = 'https://api.uber.com/v1/estimates/time'
@@ -169,14 +182,14 @@ def main():
             'start_longitude': l['longitude1'],
         }
 
-    price_api_params.append({'url': price_url, 'location_id': location_id,
-                             'type': 'price', 'parameters': price_parameters})
-    time_api_params.append({'url': time_url, 'location_id': location_id,
-                            'type': 'time', 'parameters': time_parameters})
+        price_api_params.append({'url': price_url, 'location_id': location_id,
+                                 'type': 'price', 'parameters': price_parameters})
+        time_api_params.append({'url': time_url, 'location_id': location_id,
+                                'type': 'time', 'parameters': time_parameters})
 
     curr_day = datetime.datetime.today().day
 
-    path = os.getcwd() + '../uber_data'
+    path = os.getcwd() + '/uber_data'
 
     output_file_name = str(time.strftime("%m_%d_%Y")) + '.csv'
 
@@ -194,7 +207,7 @@ def main():
         gather_loop(price_api_params, time_api_params, uber_server_tokens, os.path.join(path, output_file_name))
         
         time.sleep(180)
-           new_day = datetime.datetime.today().day
+        new_day = datetime.datetime.today().day
 
         # If the day has changed, close the previous file and open a new file.
         if new_day != curr_day:
@@ -203,7 +216,7 @@ def main():
         # Create new name by the date for the file.
         output_file_name = str(time.strftime("%m_%d_%Y")) + '.csv'
         
-        with open(os.path.join(pth, output_file_name), 'wb') as f:
+        with open(os.path.join(path, output_file_name), 'wb') as f:
             fileWriter = csv.writer(f, delimiter=',')
             fileWriter.writerow(['timestamp', 'surge_multiplier', 'expected_wait_time', 
                                  'duration', 'distance', 'estimate', 'low_estimate', 
