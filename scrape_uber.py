@@ -43,7 +43,8 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
 
     time_reqs = list() 
 
-    session = requests.session()
+    num_sessions = 10
+    sessions = [requests.session() for i in range(num_sessions)]
 
     # Create the requests for price and time API calls for each location.
     for i in range(len(price_api_params)):
@@ -55,10 +56,10 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
         # Create the asynchronous requests for this location.
         price_response = grequests.get(price_api_params[i]['url'],
                                        params=price_api_params[i]['parameters'],
-                                       session=session)
+                                       session=sessions[i % num_sessions])
         time_response = grequests.get(time_api_params[i]['url'],
                                       params=time_api_params[i]['parameters'],
-                                      session=session)
+                                      session=sessions[i % num_sessions])
 
         price_reqs.append(price_response)
         time_reqs.append(time_response)
@@ -78,7 +79,7 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
     time_data = list()
 
     # This call makes the price requests asynchronously.
-    price_results = grequests.map(price_reqs, exception_handler=lambda x, y: None)
+    price_results = grequests.map(price_reqs, size=num_sessions*5, exception_handler=lambda x, y: None)
     
     for result in price_results:
         try:
@@ -87,7 +88,7 @@ def gather_loop(price_api_params, time_api_params, uber_server_tokens, path):
             price_data.append(None)
 
     # This call makes the time requests asynchronously.
-    time_results = grequests.map(time_reqs, exception_handler=lambda x, y: None)
+    time_results = grequests.map(time_reqs, size=num_sessions*5, exception_handler=lambda x, y: None)
 
     for result in time_results:
         try:
@@ -147,20 +148,7 @@ def main():
         locations.append(location_dict)  
 
     # The tokens allow for calls to the uber API. 
-    uber_server_tokens = ['QhNzzz2EsfS5K7YbbPf3du3APJlLx7gj_V7_KSzd',
-             		      '5-XSjcsQ8VSrh1NDc7Q_4F7Giq0mXe0CdHsYViRt',
-                          'XNSBZf0XlGXL8Vv0i_nwF9S6gU8mvMI8m_BdD1q1',
-                          'rWuvx5J_v48zbUPCH1aS4qsU08P6QaxcLSQXywZq',
-                          'ekYMqzXFV1vp68kev4swZVnshBs9nvSzBT62eWc8',
-                          'eceF62G35rzOaG6xDxmy97ZyaS5G4J6lC1pa6ruR',
-		                  'u8SO6N0DIbQnasMTo_e5F9bQHzsOtk0ILDriqwP1',
-                          'MNybuzgYo_SzIxf8rL7qeNE8Z_GdAihaW0-sZjgs',
-                          'MwRdAfu7wl34oJVJo5eJWcOAoCSqMfbBcAoCntid',
-                          '8xtbiB-GJd2zxLgpRRLMe6ZTi9h85Oy-xacRm8Rn',
-                          '-kNmZfr0M8RmkiM-Oiws6lCnT_aRrEZ61uc3bfRP',
-                          'dxDcib8FerhNEvG_yHXsQsCuVx24h7rJNF0Zt3jV',
-                          'hVAY0MGSgwyIKDMAOTjvMUloSM7oxo-MQJKXW7Nt']
-
+    uber_server_tokens = []
 
     price_url = 'https://api.uber.com/v1/estimates/price'
     time_url = 'https://api.uber.com/v1/estimates/time'

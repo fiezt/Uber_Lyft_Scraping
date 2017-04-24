@@ -46,7 +46,8 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
 
     time_reqs = list() 
 
-    session = requests.session()
+    num_sessions = 10
+    sessions = [requests.session() for i in range(num_sessions)]
 
     auth_token_response = requests.post('https://api.lyft.com/oauth/token',
                                         data={"grant_type": "client_credentials",
@@ -66,12 +67,12 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
         price_response = grequests.get(price_api_params[i]['url'],
                                        params=price_api_params[i]['parameters'],
                                        headers = {'Authorization': 'Bearer '
-                                       + server_token}, session=session)
+                                       + server_token}, session=sessions[i % num_sessions])
 
         time_response = grequests.get(time_api_params[i]['url'],
                                       params=time_api_params[i]['parameters'],
                                       headers = {'Authorization': 'Bearer '
-                                      + server_token}, session=session)
+                                      + server_token}, session=sessions[i % num_sessions])
 
         price_reqs.append(price_response)
         time_reqs.append(time_response)
@@ -81,7 +82,7 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
     time_data = list()
 
     # This call makes the price requests asynchronously.
-    price_results = grequests.map(price_reqs, exception_handler=lambda x, y: None)
+    price_results = grequests.map(price_reqs, size=num_sessions*5, exception_handler=lambda x, y: None)
 
     for result in price_results:
         try:
@@ -90,7 +91,7 @@ def gather_loop(price_api_params, time_api_params, client_id, client_secret, pat
             price_data.append(None)
 
     # This call makes the time requests asynchronously.
-    time_results = grequests.map(time_reqs, exception_handler=lambda x, y: None)
+    time_results = grequests.map(time_reqs, size=num_sessions*5, exception_handler=lambda x, y: None)
 
     for result in time_results:
         try:
@@ -147,8 +148,8 @@ def main():
         locations.append(location_dict)  
 
     # API information for key.
-    client_id = ['yC1b0kHu-7pT']
-    client_secret = ['kffzlIc5f8gADZS4PPW_FMdbUzkOsCGW']
+    client_id = []
+    client_secret = []
 
     price_url = 'https://api.lyft.com/v1/cost'
     time_url = 'https://api.lyft.com/v1/eta'
