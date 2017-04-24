@@ -177,7 +177,7 @@ def main():
 
     curr_day = datetime.datetime.today().day
 
-    path = os.getcwd() + '/data'
+    path = os.getcwd() + '/lyft_data'
 
     output_file_name = str(time.strftime("%m_%d_%Y")) + '.csv'
 
